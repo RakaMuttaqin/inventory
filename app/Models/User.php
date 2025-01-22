@@ -17,10 +17,13 @@ class User extends Authenticatable
      *
      * @var list<string>
      */
+    protected $primaryKey = 'user_id';
+    protected $keyType = 'string';
     protected $fillable = [
-        'name',
-        'email',
-        'password',
+        'user_nama',
+        'user_pass',
+        'user_hak',
+        'user_sts'
     ];
 
     /**
@@ -29,7 +32,7 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $hidden = [
-        'password',
+        'user_pass',
         'remember_token',
     ];
 
@@ -41,8 +44,22 @@ class User extends Authenticatable
     protected function casts(): array
     {
         return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
+            'user_pass' => 'hashed',
         ];
+    }
+
+    public function barang()
+    {
+        return $this->hasMany(Barang::class, 'user_id', 'user_id');
+    }
+
+    public function peminjaman()
+    {
+        return $this->hasMany(Peminjaman::class, 'user_id', 'user_id');
+    }
+
+    public function pengembalian()
+    {
+        return $this->hasMany(Pengembalian::class, 'user_id', 'user_id');
     }
 }
