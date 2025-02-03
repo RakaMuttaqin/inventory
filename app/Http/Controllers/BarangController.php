@@ -29,7 +29,17 @@ class BarangController extends Controller
      */
     public function store(StoreBarangRequest $request)
     {
-        //
+        $validated = $request->validated();
+        $barangKode = 'INV' . date('Ymd') . str_pad(Barang::count() + 1, 4,   '0', STR_PAD_LEFT);
+
+        Barang::create([
+            'br_kode' => $barangKode,
+            'jns_brg_kode' => $validated['jns_brg_kode'],
+            'user_id' => null,
+            'br_nama' => $validated['br_nama'],
+            'br_tgl_terima' => $validated['br_tgl_terima'],
+            'br_status' => $validated['br_status'],
+        ]);
     }
 
     /**

@@ -11,7 +11,7 @@ class StoreBarangRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,10 @@ class StoreBarangRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'jns_brg_kode' => 'required|string',
+            'br_nama',
+            'br_tgl_terima',
+            'br_status',
         ];
     }
 }
