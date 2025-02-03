@@ -29,7 +29,9 @@ class SiswaController extends Controller
      */
     public function store(StoreSiswaRequest $request)
     {
-        //
+        $validated = $request->validated();
+
+        $siswa = Siswa::create($validated);
     }
 
     /**

@@ -11,7 +11,7 @@ class StoreSiswaRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,9 @@ class StoreSiswaRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'nis' => 'required|string|min:12|max:16|unique:siswa,nis',
+            'nama' => 'required|string',
+            'kelas' => 'required|string',
         ];
     }
 }
