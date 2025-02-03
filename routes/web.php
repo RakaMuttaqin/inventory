@@ -11,11 +11,7 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::group(['middleware' => 'checkrole:Admin'], function () {
         Route::get('/', function () {
-            return view('admin.dashboard');
-        })->name('dashboard');
-
-        Route::get('/daftar-pengguna', function () {
-            return view('admin.referensi.users.index');
-        })->name('daftar-pengguna');
+            return view('welcome');
+        })->name('admin.dashboard');
     });
 });
