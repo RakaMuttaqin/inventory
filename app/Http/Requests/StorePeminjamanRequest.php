@@ -11,7 +11,7 @@ class StorePeminjamanRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,11 @@ class StorePeminjamanRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'pb_tgl' => 'required|date',
+            'pb_harus_kembali_tgl' => 'required|date',
+            'siswa_id' => 'required|string',
+            'pb_stat' => 'required|string',
+            'dipinjam' => 'required|string|array',
         ];
     }
 }
