@@ -29,7 +29,9 @@ class JenisBarangController extends Controller
      */
     public function store(StoreJenisBarangRequest $request)
     {
-        //
+        $validated = $request->validated();
+
+        JenisBarang::create($validated);
     }
 
     /**
