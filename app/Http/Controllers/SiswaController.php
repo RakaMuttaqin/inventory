@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Siswa;
 use App\Http\Requests\StoreSiswaRequest;
 use App\Http\Requests\UpdateSiswaRequest;
+use App\Models\Kelas;
 
 class SiswaController extends Controller
 {
@@ -13,7 +14,9 @@ class SiswaController extends Controller
      */
     public function index()
     {
-        //
+        $data['siswa'] = Siswa::with('kelas')->get();
+        $data['kelas'] = Kelas::all();
+        return view('siswa.index')->with($data);
     }
 
     /**
@@ -31,7 +34,13 @@ class SiswaController extends Controller
     {
         $validated = $request->validated();
 
-        $siswa = Siswa::create($validated);
+        $siswa = Siswa::create([
+            'nis' => $validated['nis'],
+            'nama' => $validated['nama'],
+            'kelas_id' => $validated['kelas']
+        ]);
+
+        return redirect()->route('siswa.index')->with('success', 'Siswa berhasil ditambahkan');
     }
 
     /**
@@ -53,16 +62,28 @@ class SiswaController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateSiswaRequest $request, Siswa $siswa)
+    public function update(UpdateSiswaRequest $request, $id)
     {
-        //
+        $validated = $request->validated();
+
+        $siswa = Siswa::find($id);
+        $siswa->update([
+            'nis' => $validated['nis'],
+            'nama' => $validated['nama'],
+            'kelas_id' => $validated['kelas']
+        ]);
+
+        return redirect()->route('siswa.index')->with('success', 'Siswa berhasil diubah');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Siswa $siswa)
+    public function destroy($id)
     {
-        //
+        $siswa = Siswa::find($id);
+        $siswa->delete();
+
+        return redirect()->route('siswa.index')->with('success', 'Siswa berhasil dihapus');
     }
 }

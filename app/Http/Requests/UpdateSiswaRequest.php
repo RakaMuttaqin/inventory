@@ -11,7 +11,7 @@ class UpdateSiswaRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,9 @@ class UpdateSiswaRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'nis' => 'string|min:12|max:16|unique:siswa,nis,' . $this->siswa->nis,
+            'nama' => 'string',
+            'kelas',
         ];
     }
 }

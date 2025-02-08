@@ -16,11 +16,16 @@ class Siswa extends Model
     protected $fillable = [
         'nis',
         'nama',
-        'kelas',
+        'kelas_id',
     ];
 
     public function peminjaman()
     {
         return $this->hasMany(Peminjaman::class, 'siswa_id', 'nis');
+    }
+
+    public function kelas()
+    {
+        return $this->belongsTo(Kelas::class, 'kelas_id', 'id');
     }
 }
