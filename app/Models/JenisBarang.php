@@ -19,7 +19,8 @@ class JenisBarang extends Model
         'jns_brg_nama',
     ];
 
-    public function barang(){
+    public function barang()
+    {
         return $this->hasMany(Barang::class, 'jns_brg_kode', 'jns_brg_kode');
     }
 }

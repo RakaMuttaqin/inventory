@@ -13,7 +13,8 @@ class JenisBarangController extends Controller
      */
     public function index()
     {
-        //
+        $data['jenisBarang'] = JenisBarang::all();
+        return view('referensi.jenisBarang.index')->with($data);
     }
 
     /**
@@ -31,7 +32,13 @@ class JenisBarangController extends Controller
     {
         $validated = $request->validated();
 
-        JenisBarang::create($validated);
+        $jns_brg_kode = str_pad(JenisBarang::count() + 1, 5, '0', STR_PAD_LEFT);
+        JenisBarang::create([
+            'jns_brg_kode' => $jns_brg_kode,
+            'jns_brg_nama' => $validated['jns_brg_nama']
+        ]);
+
+        return redirect()->route('jenis-barang.index')->with('success', 'Jenis barang berhasil ditambahkan');
     }
 
     /**
@@ -53,16 +60,27 @@ class JenisBarangController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateJenisBarangRequest $request, JenisBarang $jenisBarang)
+    public function update(UpdateJenisBarangRequest $request, $id)
     {
-        //
+        $validated = $request->validated();
+
+        $jenisBarang = JenisBarang::find($id);
+
+        $jenisBarang->update([
+            'jns_brg_nama' => $validated['jns_brg_nama']
+        ]);
+
+        return redirect()->route('jenis-barang.index')->with('success', 'Jenis barang berhasil diubah');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(JenisBarang $jenisBarang)
+    public function destroy($id)
     {
-        //
+        $jenisBarang = JenisBarang::find($id);
+        $jenisBarang->delete();
+
+        return redirect()->route('jenis-barang.index')->with('success', 'Jenis barang berhasil dihapus');
     }
 }
