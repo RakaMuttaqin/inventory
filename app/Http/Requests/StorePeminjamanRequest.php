@@ -19,14 +19,13 @@ class StorePeminjamanRequest extends FormRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
-    public function rules(): array
+    public function rules()
     {
         return [
-            'pb_tgl' => 'required|date',
+            'siswa' => 'required|exists:siswa,nis',
             'pb_harus_kembali_tgl' => 'required|date',
-            'siswa_id' => 'required|string',
-            'pb_stat' => 'required|string',
-            'dipinjam' => 'required|string|array',
+            'data_pinjam' => 'required|array',
+            'data_pinjam.*' => 'string|exists:barang,br_kode',
         ];
     }
 }

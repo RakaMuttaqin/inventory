@@ -11,12 +11,14 @@ class PeminjamanBarang extends Model
     use HasFactory;
 
     protected $table = 'peminjaman_barang';
+    public $incrementing = false;
     protected $primaryKey = 'pbd_id';
     protected $keyType = 'string';
 
     protected $fillable = ['pbd_id', 'pb_id', 'br_kode', 'pbd_tgl', 'pbd_sts'];
 
-    public function peminjaman(){
+    public function peminjaman()
+    {
         return $this->belongsTo(Peminjaman::class, 'pb_id', 'pb_id');
     }
 

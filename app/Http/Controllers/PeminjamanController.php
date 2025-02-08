@@ -7,8 +7,10 @@ use App\Http\Requests\StorePeminjamanRequest;
 use App\Http\Requests\UpdatePeminjamanRequest;
 use App\Models\Barang;
 use App\Models\PeminjamanBarang;
+use App\Models\Siswa;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class PeminjamanController extends Controller
 {
@@ -17,87 +19,59 @@ class PeminjamanController extends Controller
      */
     public function index()
     {
-        //
+        $data['peminjaman'] = Peminjaman::with(['peminjamanBarang.barang', 'user', 'siswa', 'pengembalian'])
+            ->get();
+        $data['barang'] = Barang::where('br_status', '0')->get();
+
+        $data['siswa'] = Siswa::all();
+        return view('peminjaman_barang.daftar_peminjaman.index')->with($data);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(StorePeminjamanRequest $request)
     {
-        $validated = $request->validated();
-        $pb_id = 'PJ' . date('YM') . str_pad(Peminjaman::count() + 1, 4, '0', STR_PAD_LEFT);
-        $pbd_id = $pb_id . str_pad(PeminjamanBarang::count() + 1, 4, '0', STR_PAD_LEFT);
+        $validated = $request->all();
 
         DB::beginTransaction();
         try {
+            $pb_id = 'PJ' . date('Ym') . str_pad(Peminjaman::count() + 1, 4, '0', STR_PAD_LEFT);
+
+            // Simpan data peminjaman
             $peminjaman = Peminjaman::create([
                 'pb_id' => $pb_id,
                 'user_id' => Auth::user()->user_id,
-                'pb_tgl' => $validated['pb_tgl'],
+                'pb_tgl' => date('Y-m-d:H:i:s'),
+                'siswa_id' => $validated['siswa'], // Pastikan ID ini benar
                 'pb_harus_kembali_tgl' => $validated['pb_harus_kembali_tgl'],
+                'pb_stat' => 1,
             ]);
 
-            $arrayBarang = $validated['dipinjam'];
+            $counter = 1;
+            // Simpan peminjaman barang
+            foreach ($validated['data_pinjam'] as $br_kode) {
+                $pbd_id = $pb_id . str_pad($counter++, 3, '0', STR_PAD_LEFT); // Hindari count() dalam loop
 
-            foreach ($arrayBarang as $value) {
-                $barang = Barang::find($value['br_kode']);
-                if (!$barang) {
-                    DB::rollBack();
-                }
-
-                $peminjaman_barang = PeminjamanBarang::create([
+                $peminjamanBarang = PeminjamanBarang::create([
                     'pbd_id' => $pbd_id,
                     'pb_id' => $peminjaman->pb_id,
-                    'br_kode' => $value['br_kode'],
-                    'pbd_tgl' => $value['pdb_tgl'],
+                    'br_kode' => $br_kode,
+                    'pbd_tgl' => date('Y-m-d'),
+                    'pbd_sts' => '1',
                 ]);
             }
 
-            DB::commit(); // Jangan lupa commit!
+            DB::commit();
+
+            return redirect()->route('peminjaman-barang.index')->with('success', 'Data berhasil disimpan');
         } catch (\Throwable $th) {
             DB::rollBack();
-            throw $th;
+            Log::error('Error menyimpan peminjaman: ' . $th->getMessage());
+            return redirect()->back()->withErrors(['messages' => 'Terjadi kesalahan: ' . $th->getMessage()]);
         }
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(Peminjaman $peminjaman)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Peminjaman $peminjaman)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdatePeminjamanRequest $request, Peminjaman $peminjaman)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Peminjaman $peminjaman)
-    {
-        //
+        $data['peminjaman'] = $peminjaman;
+        return view('peminjaman_barang.daftar_peminjaman.index')->with($data);
     }
 }
