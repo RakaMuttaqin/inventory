@@ -22,10 +22,10 @@ class StoreBarangRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'br_nama' => 'required|string',
             'jns_brg_kode' => 'required|string',
-            'br_nama',
-            'br_tgl_terima',
-            'br_status',
+            'br_tgl_terima' => 'required|date',
+            'br_status' => 'required|string',
         ];
     }
 }

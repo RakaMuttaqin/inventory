@@ -24,7 +24,7 @@ class Barang extends Model
         'br_status',
     ];
 
-    public function jenis_barang()
+    public function jenisBarang()
     {
         return $this->belongsTo(JenisBarang::class, 'jns_brg_kode', 'jns_brg_kode');
     }

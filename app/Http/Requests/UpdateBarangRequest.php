@@ -11,7 +11,7 @@ class UpdateBarangRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,10 @@ class UpdateBarangRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'br_nama' => 'string',
+            'jns_brg_kode' => 'string',
+            'br_tgl_terima' => 'date',
+            'br_status' => 'string',
         ];
     }
 }
